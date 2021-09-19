@@ -32,21 +32,21 @@
         [ new Image(),new Image(),new Image()]
     ];
 //czerwony pin polaczenia
-pin_connections_img[0][0].src = "img/reda.png";
-pin_connections_img[0][1].src = "img/redb.png";
-pin_connections_img[0][2].src = "img/redc.png";
+    pin_connections_img[0][0].src = "img/reda.png";
+    pin_connections_img[0][1].src = "img/redb.png";
+    pin_connections_img[0][2].src = "img/redc.png";
 //zielony pin polaczenia
-pin_connections_img[1][0].src = "img/greena.png";
-pin_connections_img[1][1].src = "img/greenb.png";
-pin_connections_img[1][2].src = "img/greenc.png";
+    pin_connections_img[1][0].src = "img/greena.png";
+    pin_connections_img[1][1].src = "img/greenb.png";
+    pin_connections_img[1][2].src = "img/greenc.png";
 //niebieski pin polaczenia
-pin_connections_img[2][0].src = "img/bluea.png";
-pin_connections_img[2][1].src = "img/blueb.png";
-pin_connections_img[2][2].src = "img/bluec.png";
+    pin_connections_img[2][0].src = "img/bluea.png";
+    pin_connections_img[2][1].src = "img/blueb.png";
+    pin_connections_img[2][2].src = "img/bluec.png";
 //sound
-var key_switch_sound = new Audio('audio/key_switch.mp3');
-var switch_sound = new Audio('audio/switch.mp3');
-var loading_sound = new Audio('audio/loading.mp3');
+    var key_switch_sound = new Audio('audio/key_switch.mp3');
+    var switch_sound = new Audio('audio/switch.mp3');
+    var loading_sound = new Audio('audio/loading.mp3');
 
 
     class LeftPin
@@ -119,19 +119,13 @@ var loading_sound = new Audio('audio/loading.mp3');
     }
     
 	class VoltLab {
-        rightPressed = false;
-        leftPressed = false;
         cyfraWidth = 83;
         cyfraHeight = 106;
         targetValue = ['1','2','3'];
         multipliers = ['1','10','50'];
-        focus = [false, false, false];
-        TARGET = 0;
-        focusKey = 0;
-        canvas;
-        layerBackground;
-        layerBattery;
+        target = 0;
         result = 0;
+        focusKey = 0;
         batteries = 6;
         battery_charge = 5;
         left_pins;
@@ -140,17 +134,28 @@ var loading_sound = new Audio('audio/loading.mp3');
             this.layerBattery = document.getElementById("layerBattery").getContext("2d");
             this.layerResult = document.getElementById("layerResult").getContext("2d");
             this.layerConnections = document.getElementById("layerConnections").getContext("2d");
-            //this.canvas = document.getElementById("myCanvas");
-			//this.ctx = this.canvas.getContext("2d");
             this.left_pins = [new LeftPin(this.layerConnections,0),new LeftPin(this.layerConnections,1),new LeftPin(this.layerConnections,2)];
+            this.left_pins[0].focus=0;
 			this.generate_key();
             this.generate_multipliers();
-			this.load_imgs();
-            
 		}
         start()
         {
+            this.draw_layerBackground();
+            this.draw_layerBattery();
+            this.draw_layerResult();
+            this.draw();
             window.addEventListener('keydown',this.check.bind(this),false);
+        }
+        animation_connections()
+        {
+            document.getElementById("layerConnections").animate([
+                { opacity: '1' },
+                { opacity: '0.4' }
+              ], {
+                duration: 200,
+                iterations: 3
+              });
         }
 		check(e) {
 			var code = e.keyCode;
@@ -167,6 +172,7 @@ var loading_sound = new Audio('audio/loading.mp3');
                 this.left_pins[this.focusKey].focus = -1;
                 this.up_control(); 
                 this.left_pins[this.focusKey].focus = 0; 
+                this.draw(); 
                 break; //Up key
 			case 39: 
                 this.sub_battery_charge()
@@ -180,6 +186,7 @@ var loading_sound = new Audio('audio/loading.mp3');
                 this.left_pins[this.focusKey].focus = -1; 
                 this.down_control(); 
                 this.left_pins[this.focusKey].focus = 0; 
+                this.draw(); 
                 break; //Down key
             case 13: 
                 if(this.left_pins[this.focusKey].connections[0] == false && this.left_pins[this.focusKey].connections[1] == false &&
@@ -190,6 +197,7 @@ var loading_sound = new Audio('audio/loading.mp3');
                         this.left_pins[2].connections[this.left_pins[this.focusKey].focus] == 0)
                         {
                             this.left_pins[this.focusKey].connections[this.left_pins[this.focusKey].focus] = true;
+                            this.animation_connections();
                             switch_sound.play();
                             this.check_end();
                         }
@@ -198,7 +206,6 @@ var loading_sound = new Audio('audio/loading.mp3');
 			//default: alert(code); //Everything else
 				}
 		}
-
         sub_battery_charge()
         {
             this.battery_charge = this.battery_charge - 1;
@@ -208,7 +215,7 @@ var loading_sound = new Audio('audio/loading.mp3');
                 this.battery_charge = 5;
                 this.batteries = this.batteries - 1;
                 
-                this.draw_batteries();
+                this.draw_layerBattery();
             }
         }
         check_end()
@@ -220,7 +227,7 @@ var loading_sound = new Audio('audio/loading.mp3');
             }
             if(this.left_pins[0].is_connected() + this.left_pins[1].is_connected() + this.left_pins[2].is_connected() == 3)
             {
-                if(this.result == this.TARGET)
+                if(this.result == this.target)
                 {
                     this.success_end();
                 }else
@@ -246,33 +253,37 @@ var loading_sound = new Audio('audio/loading.mp3');
 			this.left_pins[0].value = 1+ Math.floor(Math.random() * 9);
 			this.left_pins[1].value = 1+ Math.floor(Math.random() * 9);
 			this.left_pins[2].value = 1+ Math.floor(Math.random() * 9);
-			this.TARGET = this.left_pins[0].value*1 + this.left_pins[1].value*10 + this.left_pins[2].value*50;
-			if(this.TARGET < 100)
+			this.target = this.left_pins[0].value*1 + this.left_pins[1].value*10 + this.left_pins[2].value*50;
+			if(this.target < 100)
 			{
 				this.targetValue[0] = 0;
-				this.targetValue[1] = (''+this.TARGET)[0];
-				this.targetValue[2] = (''+this.TARGET)[1];
+				this.targetValue[1] = (''+this.target)[0];
+				this.targetValue[2] = (''+this.target)[1];
 			}else
 			{
-				this.targetValue[0] = (''+this.TARGET)[0];
-				this.targetValue[1] = (''+this.TARGET)[1];
-				this.targetValue[2] = (''+this.TARGET)[2];
+				this.targetValue[0] = (''+this.target)[0];
+				this.targetValue[1] = (''+this.target)[1];
+				this.targetValue[2] = (''+this.target)[2];
 			}
 		}
-        generate_multipliers()
+        down_control()
         {
-            this.multipliers = this.multipliers.sort(() => Math.random() - 0.5);
+            this.focusKey = this.focusKey + 1;
+            if(this.focusKey > 2)
+            {
+                this.focusKey = 0;
+            }
+            this.draw();
         }
-		draw_base()
-		{
-            this.layerBackground.drawImage(background_img, 0, 0);
-		}
-		draw_target()
-		{
-            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[0])], 384, 34);
-            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[1])], 384 + this.cyfraWidth, 34);
-            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[2])], 384 + this.cyfraWidth + this.cyfraWidth, 34);
-		}
+        up_control()
+        {
+            this.focusKey = this.focusKey - 1;
+            if(this.focusKey < 0)
+            {
+                this.focusKey = 2;
+            }
+            this.draw();
+        }
         calculate_result()
         {
             this.result = 0;
@@ -284,7 +295,23 @@ var loading_sound = new Audio('audio/loading.mp3');
                 }
             }
         }
-        draw_result()
+        generate_multipliers()
+        {
+            this.multipliers = this.multipliers.sort(() => Math.random() - 0.5);
+        }
+		draw_layerBackground()
+		{
+            this.layerBackground.drawImage(background_img, 0, 0);
+            this.draw_target();
+            this.draw_left_pin_numbers();
+		}
+		draw_target()
+		{
+            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[0])], 384, 34);
+            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[1])], 384 + this.cyfraWidth, 34);
+            this.layerBackground.drawImage(digit_img[parseInt(this.targetValue[2])], 384 + this.cyfraWidth + this.cyfraWidth, 34);
+		}  
+        draw_layerResult()
 		{
             this.layerResult.clearRect(384, 714, 384 + 3*this.cyfraWidth, 714+this.cyfraHeight);
             
@@ -311,25 +338,13 @@ var loading_sound = new Audio('audio/loading.mp3');
             }
             this.result = t_result;
 		}
-		draw_key()
+		draw_left_pin_numbers()
 		{
             this.layerBackground.drawImage(digit_img[this.left_pins[0].value], 67, 167);
             this.layerBackground.drawImage(digit_img[this.left_pins[1].value], 67, 375);
             this.layerBackground.drawImage(digit_img[this.left_pins[2].value], 67, 583);
 		}
-		draw_key_focused()
-		{
-			if(this.focus[0]){		
-				this.layerConnections.drawImage(left_pin_img.get("red"), 62, 164);
-			}
-			if(this.focus[1]){		
-				this.layerConnections.drawImage(left_pin_img.get("green"), 62, 372);
-			}
-			if(this.focus[2]){
-				this.layerConnections.drawImage(left_pin_img.get("blue"), 62, 581);
-			}
-		}
-		draw_key_actually_focused()
+		draw_left_pin_focused_color()
 		{
 			if(this.focusKey == 0){
                 this.layerConnections.drawImage(left_pin_img.get("red"), 62, 164);
@@ -350,25 +365,7 @@ var loading_sound = new Audio('audio/loading.mp3');
             item.draw_connections();
             });    
         }
-		down_control()
-		{
-			this.focusKey = this.focusKey + 1;
-			if(this.focusKey > 2)
-			{
-				this.focusKey = 0;
-			}
-			this.draw();
-		}
-		up_control()
-		{
-            this.focusKey = this.focusKey - 1;
-			if(this.focusKey < 0)
-			{
-				this.focusKey = 2;
-			}
-			this.draw();
-		}
-        draw_batteries()
+        draw_layerBattery()
         {
             this.layerBattery.clearRect(0, 0, 1013, 859);
             for (var i = 0; i < this.batteries; i++) {
@@ -377,39 +374,11 @@ var loading_sound = new Audio('audio/loading.mp3');
         }
 		draw() 
 		{
-			//this.draw_base();
-			//this.draw_target();
-			//this.draw_key();
-            this.draw_result();
-            this.draw_batteries();
             this.draw_left_pin_connections();
-			this.draw_key_actually_focused();
-			this.draw_key_focused();
+			this.draw_left_pin_focused_color();
+            this.draw_layerResult();
 		}
-		load_imgs()
-		{
-			var self = this;
-			
-			background_img.onload = function(){
-                self.layerBackground.drawImage(background_img, 0, 0);
-                
-                
-                self.draw_target();
-                self.draw_key();
-                self.draw_result();
-                self.draw_batteries();
-
-                if(self.focusKey == 0){
-                    self.layerConnections.drawImage(left_pin_red, 62, 164);
-                }
-                if(self.focusKey == 1){
-                    self.layerConnections.drawImage(left_pin_green, 62, 372);
-                }
-                if(self.focusKey == 2){
-                    self.layerConnections.drawImage(left_pin_blue, 62, 581);
-                }
-			}
-		}
+		
     }
         
 
