@@ -2,7 +2,7 @@
 
 Próba jak najwierniejszego odtworzenia minigry włamania do bocznych pomieszczeń sejfu w kasynie serwera GTA WL-ON 5City.
 Minigra została stworzona na podstawie aktualnie jedynego podejścia do tego hacka. Podejście to zostało wykonane przez Ewroon podczas drugiego napadu na kasyno.
-Kliknij screena poniżej, aby to wypróbować!
+## - - Kliknij screena poniżej, aby to wypróbować! - - 
 
 [![example](https://user-images.githubusercontent.com/90990679/133932960-32db9b91-c72f-4c73-aef3-69b07a6439a0.png)](https://deemor.github.io/minigameVolt/)
 
