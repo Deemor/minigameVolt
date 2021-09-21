@@ -127,7 +127,8 @@
         result = 0;
         focusKey = 0;
         batteries = 6;
-        battery_charge = 5;
+        battery_charge = 7;
+        is_end = false;
         left_pins;
 		constructor() {
 			this.layerBackground = document.getElementById("layerBackground").getContext("2d");
@@ -146,6 +147,7 @@
             this.draw_layerResult();
             this.draw();
             window.addEventListener('keydown',this.check.bind(this),false);
+            this.time_event_battery();
         }
         animation_connections()
         {
@@ -158,53 +160,52 @@
               });
         }
 		check(e) {
-			var code = e.keyCode;
-			switch (code) {
-			case 37: 
-                this.sub_battery_charge()
-                key_switch_sound.play();
-                this.left_pins[this.focusKey].left_control(); 
-                this.draw();  
-                break; //Left key
-			case 38: 
-                this.sub_battery_charge()
-                key_switch_sound.play();
-                this.left_pins[this.focusKey].focus = -1;
-                this.up_control(); 
-                this.left_pins[this.focusKey].focus = 0; 
-                this.draw(); 
-                break; //Up key
-			case 39: 
-                this.sub_battery_charge()
-                key_switch_sound.play();
-                this.left_pins[this.focusKey].right_control();
-                this.draw(); 
-            break; //Right key
-			case 40: 
-                this.sub_battery_charge()
-                key_switch_sound.play();
-                this.left_pins[this.focusKey].focus = -1; 
-                this.down_control(); 
-                this.left_pins[this.focusKey].focus = 0; 
-                this.draw(); 
-                break; //Down key
-            case 13: 
-                if(this.left_pins[this.focusKey].connections[0] == false && this.left_pins[this.focusKey].connections[1] == false &&
-                    this.left_pins[this.focusKey].connections[2] == false)
-                    {
-                        if(this.left_pins[0].connections[this.left_pins[this.focusKey].focus] +
-                        this.left_pins[1].connections[this.left_pins[this.focusKey].focus] +
-                        this.left_pins[2].connections[this.left_pins[this.focusKey].focus] == 0)
+            if(!this.is_end)
+            {
+                var code = e.keyCode;
+                switch (code) {
+                case 37: 
+                    key_switch_sound.play();
+                    this.left_pins[this.focusKey].left_control(); 
+                    this.draw();  
+                    break; //Left key
+                case 38: 
+                    key_switch_sound.play();
+                    this.left_pins[this.focusKey].focus = -1;
+                    this.up_control(); 
+                    this.left_pins[this.focusKey].focus = 0; 
+                    this.draw(); 
+                    break; //Up key
+                case 39: 
+                    key_switch_sound.play();
+                    this.left_pins[this.focusKey].right_control();
+                    this.draw(); 
+                break; //Right key
+                case 40: 
+                    key_switch_sound.play();
+                    this.left_pins[this.focusKey].focus = -1; 
+                    this.down_control(); 
+                    this.left_pins[this.focusKey].focus = 0; 
+                    this.draw(); 
+                    break; //Down key
+                case 13: 
+                    if(this.left_pins[this.focusKey].connections[0] == false && this.left_pins[this.focusKey].connections[1] == false &&
+                        this.left_pins[this.focusKey].connections[2] == false)
                         {
-                            this.left_pins[this.focusKey].connections[this.left_pins[this.focusKey].focus] = true;
-                            this.animation_connections();
-                            switch_sound.play();
-                            this.check_end();
+                            if(this.left_pins[0].connections[this.left_pins[this.focusKey].focus] +
+                            this.left_pins[1].connections[this.left_pins[this.focusKey].focus] +
+                            this.left_pins[2].connections[this.left_pins[this.focusKey].focus] == 0)
+                            {
+                                this.left_pins[this.focusKey].connections[this.left_pins[this.focusKey].focus] = true;
+                                this.animation_connections();
+                                switch_sound.play();
+                                this.check_end();
+                            }
                         }
+                break;
+                //default: alert(code); //Everything else
                     }
-            break;
-			//default: alert(code); //Everything else
-				}
+            }
 		}
         sub_battery_charge()
         {
@@ -212,10 +213,21 @@
             this.check_end();
             if(this.battery_charge < 0)
             {
-                this.battery_charge = 5;
+                this.battery_charge = 3;
                 this.batteries = this.batteries - 1;
                 
                 this.draw_layerBattery();
+            }
+        }
+        time_event_battery()
+        {
+            if(!this.is_end)
+            {
+                var self = this;
+                window.setTimeout(function() {
+                    self.sub_battery_charge();
+                    self.time_event_battery();
+                }, 500); 
             }
         }
         check_end()
@@ -234,8 +246,10 @@
                 this.fail_end();
             }
         }
+        
         success_end()
         {
+            this.is_end = true;
             loading_sound.play();
             document.getElementById("scene").style.display="none";
             window.removeEventListener('keydown',this.check.bind(this),false);
@@ -243,6 +257,7 @@
         }
         fail_end()
         {
+            this.is_end = true;
             loading_sound.play();
             document.getElementById("scene").style.display="none";
             window.removeEventListener('keydown',this.check.bind(this),false);
