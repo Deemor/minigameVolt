@@ -213,7 +213,7 @@
             this.check_end();
             if(this.battery_charge < 0)
             {
-                this.battery_charge = 3;
+                this.battery_charge = 7;
                 this.batteries = this.batteries - 1;
                 
                 this.draw_layerBattery();
