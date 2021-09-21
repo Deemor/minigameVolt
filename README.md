@@ -11,10 +11,8 @@ Hacka można rozwiązać prostym logicznym myśleniem. Poniżej przedstawiam jed
 ![poradnik](https://user-images.githubusercontent.com/90990679/133933206-731f7a9b-d8be-4e49-853e-fd838f43bbf1.png)
 
 ### Warunki nieudanego hacka 
-1. Wyczerpanie baterii - może ono być spowodowane przez nadmierną ilość ruchów lub wyczerpanie dostępnego czasu*,
+1. Wyczerpanie baterii - po określonym czasie (20s) stan baterii spada do 0%,
 2. Połączenie wszystkich dostępnych cyfr do nieodpowiednich znaków (wówczas pole result jest różne od pola target).
-
-*czas - nie został zaimplementowany z uwagi na mało znaczący wpływ na hacka oraz z uwagi na to, że jest to wersja treningowa.
 
 # Wspierane przeglądarki
 Testowane na: Firefox, Chrome.
