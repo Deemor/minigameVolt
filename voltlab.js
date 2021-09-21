@@ -227,24 +227,27 @@
                 window.setTimeout(function() {
                     self.sub_battery_charge();
                     self.time_event_battery();
-                }, 500); 
+                }, 800); 
             }
         }
         check_end()
         {
-            this.calculate_result();
-            if(this.batteries == 0 && this.battery_charge <= 4)
-            {
-                this.fail_end();
-            }
-            if(this.left_pins[0].is_connected() + this.left_pins[1].is_connected() + this.left_pins[2].is_connected() == 3)
-            {
-                if(this.result == this.target)
-                {
-                    this.success_end();
-                }else
-                this.fail_end();
-            }
+            if(!this.is_end)
+	    {
+		this.calculate_result();
+		    if(this.batteries == 0 && this.battery_charge <= 4)
+		    {
+			this.fail_end();
+		    }
+		    if(this.left_pins[0].is_connected() + this.left_pins[1].is_connected() + this.left_pins[2].is_connected() == 3)
+		    {
+			if(this.result == this.target)
+			{
+			    this.success_end();
+			}else
+			this.fail_end();
+		    }    
+	    }
         }
         
         success_end()
