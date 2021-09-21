@@ -127,7 +127,7 @@
         result = 0;
         focusKey = 0;
         batteries = 6;
-        battery_charge = 7;
+        battery_charge = 6;
         is_end = false;
         left_pins;
 		constructor() {
@@ -213,7 +213,7 @@
             this.check_end();
             if(this.battery_charge < 0)
             {
-                this.battery_charge = 7;
+                this.battery_charge = 6;
                 this.batteries = this.batteries - 1;
                 
                 this.draw_layerBattery();
@@ -227,7 +227,7 @@
                 window.setTimeout(function() {
                     self.sub_battery_charge();
                     self.time_event_battery();
-                }, 800); 
+                }, 500); 
             }
         }
         check_end()
