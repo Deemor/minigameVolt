@@ -6,6 +6,12 @@ Minigra została stworzona na podstawie aktualnie jedynego podejścia do tego ha
 
 [![example](https://user-images.githubusercontent.com/90990679/133932960-32db9b91-c72f-4c73-aef3-69b07a6439a0.png)](https://deemor.github.io/minigameVolt/)
 
+# Dlaczego nie stworzyłeś tablicy w której symbolom odpowiadają ich mnożniki?
+Ponieważ się nie da.
+Taki sam symbol (np. "X") może mieć różne mnożniki podczas różnych prób hackowania.
+np. 
+W jednej z prób symbol "X" może mieć przypisany mnożnik 10 - w innej natomiast może mieć mnożnik 50.
+
 # Opis oraz poradnik
 Hacka można rozwiązać prostym logicznym myśleniem. Poniżej przedstawiam jednak algorytm rozwiązywania hacka oraz krótki jego opis.
 ![poradnik](https://user-images.githubusercontent.com/90990679/133933206-731f7a9b-d8be-4e49-853e-fd838f43bbf1.png)
