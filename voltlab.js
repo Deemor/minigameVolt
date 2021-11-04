@@ -166,25 +166,26 @@
                 switch (code) {
 		case 37: 
                     key_switch_sound.play();
-                    this.left_pins[this.focusKey].focus = -1; 
-                    this.down_control(); 
+                    this.left_pins[this.focusKey].focus = -1;
+                    this.up_control(); 
                     this.left_pins[this.focusKey].focus = 0; 
                     this.draw(); 
                     break; //Left key
                 case 38: 
-                    key_switch_sound.play();
-                    this.left_pins[this.focusKey].right_control();
+					key_switch_sound.play();
+                    this.left_pins[this.focusKey].left_control(); 
+                    this.draw(); 
                     break; //Up key
                 case 39: 
-                    key_switch_sound.play();
-                    this.left_pins[this.focusKey].focus = -1;
-                    this.up_control(); 
+					key_switch_sound.play();
+                    this.left_pins[this.focusKey].focus = -1; 
+                    this.down_control(); 
                     this.left_pins[this.focusKey].focus = 0; 
                     this.draw(); 
                 break; //Right key
                 case 40: 
                     key_switch_sound.play();
-                    this.left_pins[this.focusKey].left_control(); 
+                    this.left_pins[this.focusKey].right_control();
                     this.draw(); 
                     break; //Down key
                 case 13: 
